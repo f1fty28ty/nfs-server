@@ -1,1 +1,1 @@
-/mnt 172.18.0.0/16(rw,sync,no_subtree_check,no_root_squash)
+/mnt *(rw,sync,no_subtree_check,no_root_squash)

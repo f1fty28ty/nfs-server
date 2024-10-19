@@ -6,7 +6,7 @@ spec:
   containers:
     - name: app
       image: busybox
-      command: ["/bin/sh", "-c", "while true; echo $(date) >> /mnt/data/log.txt; sleep 5; done"]
+      command: ["/bin/bash", "-c", "while true; echo $(date) >> /mnt/data/log.txt; sleep 5;done"]
       volumeMounts:
         - mountPath: /mnt/data
           name: nfs-storage
@@ -23,7 +23,7 @@ spec:
   containers:
     - name: app
       image: busybox
-      command: ["/bin/sh", "-c", "while true; echo $(date) >> /mnt/data/log.txt; sleep 5; done"]
+      command: ["/bin/bash", "-c", "while true; echo $(date) >> /mnt/data/log.txt; sleep 5;done"]
       volumeMounts:
         - mountPath: /mnt/data
           name: nfs-storage
@@ -40,7 +40,7 @@ spec:
   containers:
     - name: app
       image: busybox
-      command: ["/bin/sh", "-c", "while true; echo $(date) >> /mnt/data/log.txt; sleep 5; done"]
+      command: ["/bin/bash", "-c", "while true; echo $(date) >> /mnt/data/log.txt; sleep 5;done"]
       volumeMounts:
         - mountPath: /mnt/data
           name: nfs-storage
@@ -48,5 +48,4 @@ spec:
     - name: nfs-storage
       persistentVolumeClaim:
         claimName: nfs-pvc
-        
 ---

@@ -4,26 +4,19 @@ services:
   nfs-server:
     build: .
     container_name: nfs-server
-    cap_add: 
+    privileged: true
+    cap_add:
       - SYS_ADMIN
       - SETPCAP
       - SYS_RESOURCE
     ports:
-      - "2049:2049"
+      - "2050:2049"
       - "5111:111/udp"
     volumes:
-      - 'nfsmount:/mnt'  # Use NFS volume for /mnt directory
+      - '/mnt:/mnt'
       - './exports:/etc/exports'
     networks:
       - nfs-network
-
-volumes:
-  nfsmount:
-    driver: local
-    driver_opts:
-      type: nfs
-      o: addr=host.docker.internal,rw,nolock,hard,nointr,nfsvers=4
-      device: ":/Volumes/nfsdata"  # Use your /Volumes/nfsdata path as the NFS directory
 
 networks:
   nfs-network:

@@ -1,8 +1,9 @@
 kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
-networking:
+networking: 
   podSubnet: "172.18.0.0/16"
 nodes:
-- role: control-plane
-- role: worker
-- role: worker
+  - role: control-plane
+  - role: worker
+  - role: worker
+
