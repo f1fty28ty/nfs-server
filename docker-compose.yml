@@ -9,3 +9,15 @@ services:
       - SYS_ADMIN
       - SETPCAP
       - SYS_RESOURCE
+    ports:
+      - "2049:2049"
+      - "5111:111/udp"
+    volumes:
+      - '/mnt:/mnt'
+      - './exports:/etc/exports'
+    networks:
+      - nfs-network
+
+networks:
+  nfs-network:
+    driver: bridge
