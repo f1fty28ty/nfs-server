@@ -7,6 +7,13 @@ spec:
     - name: app
       image: busybox
       command: ["/bin/bash", "-c", "while true; echo $(date) >> /mnt/data/log.txt; sleep 5;done"]
+      resources:
+        limits:
+          cpu: "0.5"
+          memory: "256Mi"
+        requests:
+          cpu: "0.2"
+          memory: "128Mi"
       volumeMounts:
         - mountPath: /mnt/data
           name: nfs-storage
@@ -24,6 +31,13 @@ spec:
     - name: app
       image: busybox
       command: ["/bin/bash", "-c", "while true; echo $(date) >> /mnt/data/log.txt; sleep 5;done"]
+      resources:
+        limits:
+          cpu: "0.5"
+          memory: "256Mi"
+        requests:
+          cpu: "0.2"
+          memory: "128Mi"
       volumeMounts:
         - mountPath: /mnt/data
           name: nfs-storage
@@ -41,6 +55,13 @@ spec:
     - name: app
       image: busybox
       command: ["/bin/bash", "-c", "while true; echo $(date) >> /mnt/data/log.txt; sleep 5;done"]
+      resources:
+        limits:
+          cpu: "0.5"
+          memory: "256Mi"
+        requests:
+          cpu: "0.2"
+          memory: "128Mi"
       volumeMounts:
         - mountPath: /mnt/data
           name: nfs-storage
