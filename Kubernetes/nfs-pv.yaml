@@ -7,9 +7,9 @@ spec:
     storage: 10Gi
   volumeMode: Filesystem
   accessModes:
-    - ReadWriteMany
+  - ReadWriteMany
   nfs:
     path: /mnt
-    server: 172.20.0.2
+    server: 172.22.0.2
   persistentVolumeReclaimPolicy: Retain
   storageClassName: ""

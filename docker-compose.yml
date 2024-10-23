@@ -10,7 +10,7 @@ services:
       - SETPCAP
       - SYS_RESOURCE
     ports:
-      - "2049:2049"
+      - "2050:2049"
       - "5111:111/udp"
     volumes:
       - '/mnt:/mnt'
@@ -21,3 +21,6 @@ services:
 networks:
   nfs-network:
     driver: bridge
+    ipam:
+      config:
+        - subnet: 172.22.0.0/16
