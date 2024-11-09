@@ -30,7 +30,7 @@ Ensure the following are installed and configured:
     kubectl get pods
     ```
 
-    You can `kubectl exec` into any of these pods and test the capabilities
+    You can ```kubectl exec``` into any of these pods and test the capabilities
 
 ## Project Structure
 
@@ -60,7 +60,7 @@ Ensure the following are installed and configured:
     kubectl get pods
     ```
 
-    You can `kubectl exec -it <podname> -- sh` into any of these pods and test the capabilities
+    You can ```kubectl exec -it <podname> -- sh``` into any of these pods and test the capabilities
   
 ## Contributing
 
