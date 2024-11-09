@@ -14,18 +14,20 @@ spec:
     spec:
       containers:
       - name: app
-        image: busybox
-        command: ["/bin/sh", "-c", "while true; do echo $(date) >> /mnt/log.txt; sleep 5; done"]
+        image: alpine:latest
+        command: ["/bin/sh", "-c"]
+        args:
+        - 
         resources:
           limits:
             cpu: "0.5"
             memory: "256Mi"
           requests:
-            cpu: "0.2"
-            memory: "128Mi"
+            cpu: "0.1"
+            memory: "64Mi"
         volumeMounts:
-        - mountPath: /mnt
-          name: nfs-storage
+        - name: nfs-storage
+          mountPath: /mnt
       volumes:
       - name: nfs-storage
         persistentVolumeClaim:
