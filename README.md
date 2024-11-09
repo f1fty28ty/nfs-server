@@ -24,24 +24,13 @@ Ensure the following are installed and configured:
     cd nfs-server
     ```
 
-2. **Build and Run the NFS Server in Docker**
+3. **Check Kubernetes Pods**
 
     ```bash
-    docker build -t nfs-server .
-    docker run -d --name nfs-server --privileged -v /path/to/shared/data:/mnt/data -p 2049:2049 nfs-server
+    kubectl get pods
     ```
 
-    Replace `/path/to/shared/data` with the directory you want to share with Kubernetes client pods.
-
-3. **Deploy Kubernetes Client Pods**
-   
-    Apply the Kubernetes deployment configuration to create client pods that will access the shared NFS storage:
-
-    ```bash
-    kubectl apply -f Kubernetes/deployment.yaml
-    ```
-
-    The deployment automatically provisions client pods that connect to the NFS server and demonstrate resilience and high availability.
+    You can `kubectl exec` into any of these pods and test the capabilities
 
 ## Project Structure
 
@@ -56,7 +45,7 @@ Ensure the following are installed and configured:
 - **Start the NFS Server:**
 
     ```bash
-    ./start-nfs.sh
+    ./start.sh
     ```
 
 - **Stop the NFS Server:**
@@ -67,8 +56,12 @@ Ensure the following are installed and configured:
 
 - **Access from Kubernetes Client Pods:**
 
-    After deploying, Kubernetes pods will have access to the NFS share at the specified mount point, simulating client-side access in a distributed storage environment.
+    ```bash
+    kubectl get pods
+    ```
 
+    You can `kubectl exec -it <podname> -- sh` into any of these pods and test the capabilities
+  
 ## Contributing
 
 Contributions are welcome! Please fork the repository and submit a pull request.
