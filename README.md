@@ -36,7 +36,7 @@ Ensure the following are installed and configured:
 
 - **Dockerfile**: Configuration file for building the NFS server container image.
 - **Kubernetes/**: Contains Kubernetes configurations for deploying and managing client pods.
-- **start-nfs.sh**: Script to start the NFS server.
+- **start.sh**: Script to start the NFS server.
 - **stop.sh**: Script to stop the NFS server.
 - **exports**: Configuration file specifying the NFS export directory.
 
