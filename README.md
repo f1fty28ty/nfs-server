@@ -22,6 +22,7 @@ Ensure the following are installed and configured:
     ```bash
     git clone https://github.com/f1fty28ty/nfs-server.git
     cd nfs-server
+    chmod +x start.sh stop.sh start-nfs.sh
     ```
 
 ## Project Structure
