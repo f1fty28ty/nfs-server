@@ -14,7 +14,7 @@ sudo docker-compose -f ./efk/docker-compose.yml up -d --force-recreate
 echo "Creating Kubernetes cluster..."
 
 # Create the Kubernetes cluster with kind
-sudo kind create cluster --config ./kubeclust/kind-config.yaml
+sudo kind create cluster --config ./Kubernetes/kind-config.yaml
 
 echo "Connecting Kind nodes to the NFS network..."
 
@@ -29,9 +29,9 @@ sudo docker network connect nfs-network kind-worker2
 echo "Starting up PV, PVC, and Kubernetes deployment for NFS..."
 
 # Apply Kubernetes configurations for NFS
-sudo kubectl apply -f ./kubeclust/nfs-pv.yaml
-sudo kubectl apply -f ./kubeclust/nfs-pvc.yaml
-sudo kubectl apply -f ./kubeclust/nfs-deployment.yaml
+sudo kubectl apply -f ./Kubernetes/nfs-pv.yaml
+sudo kubectl apply -f ./Kubernetes/nfs-pvc.yaml
+sudo kubectl apply -f ./Kubernetes/nfs-deployment.yaml
 
 echo "Applying Filebeat ConfigMap..."
 
