@@ -24,14 +24,6 @@ Ensure the following are installed and configured:
     cd nfs-server
     ```
 
-3. **Check Kubernetes Pods**
-
-    ```bash
-    kubectl get pods
-    ```
-
-    You can ```kubectl exec``` into any of these pods and test the capabilities
-
 ## Project Structure
 
 - **Dockerfile**: Configuration file for building the NFS server container image.

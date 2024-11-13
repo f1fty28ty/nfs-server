@@ -13,5 +13,9 @@ sudo kind delete cluster
 echo "Stopping nfs-server"
 sudo docker stop nfs-server
 
+echo "Stopping and removing the logging container..."
+docker stop logging-container
+docker rm logging-container
+
 echo "Stopping nfs-network"
 sudo docker network rm nfs-server_nfs-network

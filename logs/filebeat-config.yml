@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: filebeat-config
+  namespace: default
+data:
+  filebeat.yml: |
+    filebeat.inputs:
+    - type: log
+      paths:
+        - /var/log/audit/audit.log
+      fields:
+        app: filesystem_monitoring
+      fields_under_root: true
+
+    output.logstash:
+      hosts: ["$FLUENTD_HOST:24224"]
