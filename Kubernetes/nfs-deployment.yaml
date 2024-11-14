@@ -59,10 +59,9 @@ spec:
       - name: nfs-storage
         persistentVolumeClaim:
           claimName: nfs-pvc
-      - name: scripts-dir
-        hostPath:
-          path: ~/nfs-server/ # Path on host where git_log.sh is located
-          type: Directory
+      - name: git-scripts
+        configMap:
+          name: git-log-config # Path on host where git_log.sh is located
       - name: logs-dir
         hostPath:
           path: ~/nfs-server/logs/ # Path on host for logs directory
