@@ -4,6 +4,7 @@ services:
   nfs-server:
     build: .
     container_name: nfs-server
+    hostname: nfs-server
     privileged: true
     cap_add:
       - SYS_ADMIN
@@ -15,12 +16,10 @@ services:
     volumes:
       - '/mnt:/mnt'
       - './exports:/etc/exports'
+      - './logs:/logs'  # Add this line for logs access
     networks:
       - nfs-network
 
 networks:
   nfs-network:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 172.22.0.0/16
+    external: true

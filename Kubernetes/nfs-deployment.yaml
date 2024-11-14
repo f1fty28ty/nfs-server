@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: nfs-deployment
 spec:
-  replicas: 3 # Number of pod replicas you want
+  replicas: 1
   selector:
     matchLabels:
       app: nfs-app
@@ -12,52 +12,58 @@ spec:
       labels:
         app: nfs-app
     spec:
-      tolerations:
-      - key: "node-role.kubernetes.io/control-plane"
-        operator: "Exists"
-        effect: "NoSchedule"
-      - key: "node-role.kubernetes.io/control-plane"
-        operator: "Exists"
-        effect: "NoSchedule"
       containers:
-      - name: app
-        image: alpine:latest
+      - name: nfs-container
+        image: alpine:latest # Replace with your custom NFS server image
         command: [ "/bin/sh", "-c", "tail -f /dev/null" ]
-        resources:
-          limits:
-            cpu: "0.5"
-            memory: "256Mi"
-          requests:
-            cpu: "0.1"
-            memory: "64Mi"
+        args: [ "crond -f -d 8" ] # Start cron in foreground with logging
         volumeMounts:
         - mountPath: /mnt
           name: nfs-storage
-
-      - name: filebeat-sidecar
-        image: docker.elastic.co/beats/filebeat:7.17.5
+        - mountPath: /bin/sh
+          name: scripts-dir
+          subPath: git_log.sh
+        - mountPath: /logs
+          name: logs-dir # Mount for logs output
         env:
-        - name: FLUENTD_HOST
-          value: "172.25.0.4"
-        volumeMounts:
-        - name: nfs-storage
-          mountPath: /var/log/nfs-app
-        - name: config
-          mountPath: /usr/share/filebeat/filebeat.yml
-          subPath: filebeat.yml
-        args: [ "-c", "/usr/share/filebeat/filebeat.yml" ]
+        - name: HOSTNAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
         resources:
           limits:
-            cpu: "0.5"
+            memory: "512Mi"
+            cpu: "500m"
+
+      - name: git-logger
+        image: alpine/git
+        command: [ "/bin/sh", "-c" ]
+        args:
+        - "*/1 * * * * /scripts/git_log.sh >> /logs/log.txt 2>&1"
+        volumeMounts:
+        - mountPath: /logs
+          name: logs-dir
+        resources:
+          limits:
             memory: "256Mi"
-          requests:
-            cpu: "0.1"
-            memory: "64Mi"
+            cpu: "250m"
+      initContainers:
+      - name: git-installer
+        image: alpine/git
+        command: [ "/bin/sh", "-c", "apk add --no-cache git" ]
+        volumeMounts:
+        - mountPath: /mnt
+          name: nfs-storage
 
       volumes:
       - name: nfs-storage
         persistentVolumeClaim:
           claimName: nfs-pvc
-      - name: config
-        configMap:
-          name: filebeat-config
+      - name: scripts-dir
+        hostPath:
+          path: ~/nfs-server/ # Path on host where git_log.sh is located
+          type: Directory
+      - name: logs-dir
+        hostPath:
+          path: ~/nfs-server/logs/ # Path on host for logs directory
+          type: DirectoryOrCreate
