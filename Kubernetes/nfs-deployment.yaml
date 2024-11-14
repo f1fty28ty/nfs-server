@@ -14,55 +14,28 @@ spec:
     spec:
       containers:
       - name: nfs-container
-        image: alpine:latest # Replace with your custom NFS server image
-        command: [ "/bin/sh", "-c", "tail -f /dev/null" ]
-        args: [ "crond -f -d 8" ] # Start cron in foreground with logging
+        image: your-nfs-server-image:latest # Ensure git_log.sh is added to this image
+        command: [ "/bin/sh", "-c", "crond -f -d 8" ] # Start cron in the foreground with logging
         volumeMounts:
         - mountPath: /mnt
           name: nfs-storage
-        - mountPath: /bin/sh
-          name: scripts-dir
-          subPath: git_log.sh
         - mountPath: /logs
-          name: logs-dir # Mount for logs output
+          name: logs-dir
         env:
         - name: HOSTNAME
           valueFrom:
             fieldRef:
-              fieldPath: spec.nodeName
+              fieldPath: metadata.name
         resources:
           limits:
             memory: "512Mi"
             cpu: "500m"
 
-      - name: git-logger
-        image: alpine/git
-        command: [ "/bin/sh", "-c" ]
-        args:
-        - "*/1 * * * * /scripts/git_log.sh >> /logs/log.txt 2>&1"
-        volumeMounts:
-        - mountPath: /logs
-          name: logs-dir
-        resources:
-          limits:
-            memory: "256Mi"
-            cpu: "250m"
-      initContainers:
-      - name: git-installer
-        image: alpine/git
-        command: [ "/bin/sh", "-c", "apk add --no-cache git" ]
-        volumeMounts:
-        - mountPath: /mnt
-          name: nfs-storage
-
       volumes:
       - name: nfs-storage
         persistentVolumeClaim:
           claimName: nfs-pvc
-      - name: git-scripts
-        configMap:
-          name: git-log-config # Path on host where git_log.sh is located
       - name: logs-dir
         hostPath:
-          path: ~/nfs-server/logs/ # Path on host for logs directory
+          path: ~/nfs-server/logs # Ensure the path is accessible on the host
           type: DirectoryOrCreate
