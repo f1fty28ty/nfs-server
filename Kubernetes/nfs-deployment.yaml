@@ -31,6 +31,14 @@ spec:
             memory: "512Mi"
             cpu: "500m"
 
+      tolerations:
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/control-plane
+        operator: Exists
+      - effect: NoSchedule
+        key: node.kubernetes.io/not-ready
+        operator: Exists
+
       volumes:
       - name: nfs-storage
         persistentVolumeClaim:
