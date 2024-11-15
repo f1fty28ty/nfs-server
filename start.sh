@@ -3,7 +3,7 @@
 #
 
 echo "creating NFS Network"
-if [ "$(docker network ls | grep nfs-network)"]; then
+if [ "$(sudo docker network ls | grep nfs-network)"]; then
     echo "NFS network already exists"
 else
     sudo docker network create --driver bridge --subnet 172.25.0.0/16 nfs-network
@@ -20,8 +20,8 @@ echo "Creating Kubernetes cluster..."
 sudo kind create cluster --config ./Kubernetes/kind-config.yaml
 
 echo "Waiting for Kubernetes control-plane to be ready..."
-kubectl wait --for=condition=Ready node/kind-control-plane --timeout=120s
-kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.ymlecho "Flannel CNI applied successfully."
+sudo kubectl wait --for=condition=Ready node/kind-control-plane --timeout=120s
+sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.ymlecho "Flannel CNI applied successfully."
 
 echo "Connecting Kind nodes to the NFS network..."
 

@@ -12,8 +12,8 @@ sudo kind delete cluster
 
 # Remove Flannel CNI plugin resources (if necessary)
 echo "Removing Flannel CNI plugin resources..."
-if kubectl get nodes > /dev/null 2>&1; then
-    kubectl delete -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml || echo "Flannel CNI already removed or not found."
+if sudo kubectl get nodes > /dev/null 2>&1; then
+    sudo kubectl delete -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml || echo "Flannel CNI already removed or not found."
 else
     echo "Kubernetes cluster not available for Flannel cleanup."
 fi
