@@ -5,6 +5,7 @@ services:
     build: .
     container_name: nfs-server
     hostname: nfs-server
+    image: nfs-server:latest
     privileged: true
     cap_add:
       - SYS_ADMIN

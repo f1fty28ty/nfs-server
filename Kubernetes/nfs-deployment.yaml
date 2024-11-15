@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: nfs-container
-        image: your-nfs-server-image:latest # Ensure git_log.sh is added to this image
+        image: nfs-server:latest # Ensure git_log.sh is added to this image
         command: [ "/bin/sh", "-c", "crond -f -d 8" ] # Start cron in the foreground with logging
         volumeMounts:
         - mountPath: /mnt
@@ -37,5 +37,5 @@ spec:
           claimName: nfs-pvc
       - name: logs-dir
         hostPath:
-          path: ~/nfs-server/logs # Ensure the path is accessible on the host
+          path: /home/user/nfs-server/logs # Ensure the path is accessible on the host
           type: DirectoryOrCreate
