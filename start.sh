@@ -19,13 +19,26 @@ echo "Creating Kubernetes cluster..."
 # Create the Kubernetes cluster with kind
 sudo kind create cluster --config ./Kubernetes/kind-config.yaml
 
-echo "Waiting for Kubernetes control-plane to be ready..."
 # Wait for the control plane to be ready
-kubectl wait --for=condition=Ready node/kind-control-plane --timeout=120s
+echo "Waiting for Kubernetes control-plane to be ready..."
+kubectl wait --for=condition=Ready node/kind-control-plane --timeout=300s
 
-# Ensure all nodes are in the 'Ready' state
-kubectl wait --for=condition=Ready node --all --timeout=180s
-kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+# Check if the API server is reachable
+RETRY=0
+until kubectl get nodes &> /dev/null || [ $RETRY -eq 10 ]; do
+    echo "Waiting for the API server to respond..."
+    sleep 10
+    RETRY=$((RETRY + 1))
+done
+
+if [ $RETRY -eq 10 ]; then
+    echo "API server did not respond in time, exiting."
+    exit 1
+fi
+
+# Apply the Flannel CNI
+echo "Applying Flannel CNI..."
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml --validate=false
 echo "Flannel CNI applied successfully."
 
 # Wait for the CNI to initialize (add a 15-second delay)
