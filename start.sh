@@ -3,7 +3,7 @@
 #
 
 echo "creating NFS Network"
-if [ "$(sudo docker network ls | grep nfs-network)"]; then
+if [ "$(sudo docker network ls | grep nfs-network)" ]; then
     echo "NFS network already exists"
 else
     sudo docker network create --driver bridge --subnet 172.25.0.0/16 nfs-network
