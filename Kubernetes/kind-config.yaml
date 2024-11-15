@@ -1,12 +1,11 @@
 kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
 networking:
-  disableDefaultCNI: false
+  apiServerAddress: "127.0.0.1"
+  apiServerPort: 6443
+  disableDefaultCNI: true
 
 nodes:
-- role: control-plane
-  extraPortMappings:
-  - containerPort: 6443
-    hostPort: 6443
+- role: control-plan
 - role: worker
 - role: worker
