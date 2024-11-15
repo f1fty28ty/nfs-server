@@ -10,6 +10,6 @@ spec:
   - ReadWriteMany
   nfs:
     path: /mnt
-    server: 127.0.0.1
+    server: 172.25.0.2
   persistentVolumeReclaimPolicy: Retain
   storageClassName: ""
