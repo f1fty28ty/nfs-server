@@ -12,7 +12,11 @@ sudo kind delete cluster
 
 # Remove Flannel CNI plugin resources (if necessary)
 echo "Removing Flannel CNI plugin resources..."
-kubectl delete -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml || echo "Flannel CNI already removed or not found."
+if kubectl get nodes > /dev/null 2>&1; then
+    kubectl delete -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml || echo "Flannel CNI already removed or not found."
+else
+    echo "Kubernetes cluster not available for Flannel cleanup."
+fi
 echo "Cluster and CNI cleaned up successfully."
 
 echo "Stopping nfs-server"
