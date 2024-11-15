@@ -25,13 +25,13 @@ kubectl wait --for=condition=Ready node/kind-control-plane --timeout=300s
 
 # Check if the API server is reachable
 RETRY=0
-until kubectl get nodes &> /dev/null || [ $RETRY -eq 10 ]; do
+until kubectl get nodes &> /dev/null || [ $RETRY -eq 5 ]; do
     echo "Waiting for the API server to respond..."
     sleep 10
     RETRY=$((RETRY + 1))
 done
 
-if [ $RETRY -eq 10 ]; then
+if [ $RETRY -eq 5 ]; then
     echo "API server did not respond in time, exiting."
     exit 1
 fi
