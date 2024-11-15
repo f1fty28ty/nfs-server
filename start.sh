@@ -20,8 +20,9 @@ echo "Creating Kubernetes cluster..."
 sudo kind create cluster --config ./Kubernetes/kind-config.yaml
 
 echo "Waiting for Kubernetes control-plane to be ready..."
-sudo kubectl wait --for=condition=Ready node/kind-control-plane --timeout=120s
-sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.ymlecho "Flannel CNI applied successfully."
+kubectl wait --for=condition=Ready node/kind-control-plane --timeout=120s
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+echo "Flannel CNI applied successfully."
 
 echo "Connecting Kind nodes to the NFS network..."
 
