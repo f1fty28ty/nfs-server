@@ -2,7 +2,7 @@ FROM arm64v8/ubuntu:latest
 
 # Install necessary packages
 RUN apt-get update && \
-    apt-get install -y nfs-kernel-server rpcbind kmod git cron inotify-tools && \
+    apt-get install -y nfs-kernel-server rpcbind kmod git cron logrotate && \
     rm -rf /var/lib/apt/lists/*
 
 # Create and set permissions for directories

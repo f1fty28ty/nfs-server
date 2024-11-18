@@ -13,14 +13,12 @@ spec:
         app: nfs-app
     spec:
       containers:
-      - name: nfs-container
-        image: nfs-server:latest
-        command: [ "/bin/sh", "-c", "crond -f -d 8" ]
+      - name: nfs-client
+        image: busybox # Using busybox as a lightweight image
+        command: [ "/bin/sh", "-c", "while true; do echo \"$(date): Client $(hostname) logged in\" >> /mnt/logs/login.txt; sleep 60; done" ]
         volumeMounts:
         - mountPath: /mnt
           name: nfs-storage
-        - mountPath: /logs
-          name: logs-dir
         env:
         - name: HOSTNAME
           valueFrom:
@@ -28,13 +26,16 @@ spec:
               fieldPath: metadata.name
         resources:
           limits:
-            memory: "512Mi"
-            cpu: "500m"
+            memory: "64Mi"
+            cpu: "100m"
+      tolerations:
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/control-plane
+        operator: Exists
+      - effect: NoSchedule
+        key: node.kubernetes.io/not-ready
+        operator: Exists
       volumes:
       - name: nfs-storage
         persistentVolumeClaim:
           claimName: nfs-pvc
-      - name: logs-dir
-        hostPath:
-          path: /home/user/nfs-server/logs
-          type: DirectoryOrCreate

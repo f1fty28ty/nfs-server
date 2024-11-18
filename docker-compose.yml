@@ -18,6 +18,7 @@ services:
       - '/mnt:/mnt'
       - './exports:/etc/exports'
       - './logs:/logs'
+      - './Kubernetes/logrotate.conf:/etc/logrotate.d/nfs-logs'  # Mount logrotate.conf
     networks:
       - nfs-network
 
