@@ -1,26 +1,54 @@
 #!/bin/bash
-#
-#
 
-echo "Deleting Kube cluster services"
-sudo kubectl delete -f ./Kubernetes/nfs-deployment.yaml
-sudo kubectl delete -f ./Kubernetes/nfs-pvc.yaml
-sudo kubectl delete -f ./Kubernetes/nfs-pv.yaml
+# Constants
+FLANNEL_CNI_URL="https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml"
+NFS_NETWORK="nfs-network"
 
-echo "Deleting Kind cluster"
-sudo kind delete cluster
+# Function to delete Kubernetes resources
+delete_kubernetes_resources() {
+    echo "Deleting Kubernetes resources..."
+    sudo kubectl delete -f ./Kubernetes/nfs-deployment.yaml --ignore-not-found
+    sudo kubectl delete -f ./Kubernetes/nfs-pvc.yaml --ignore-not-found
+    sudo kubectl delete -f ./Kubernetes/nfs-pv.yaml --ignore-not-found
+}
 
-# Remove Flannel CNI plugin resources (if necessary)
-echo "Removing Flannel CNI plugin resources..."
-if sudo kubectl get nodes > /dev/null 2>&1; then
-    sudo kubectl delete -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml || echo "Flannel CNI already removed or not found."
-else
-    echo "Kubernetes cluster not available for Flannel cleanup."
-fi
-echo "Cluster and CNI cleaned up successfully."
+# Function to delete the Kind cluster
+delete_kind_cluster() {
+    echo "Deleting Kind cluster..."
+    sudo kind delete cluster
+}
 
-echo "Stopping nfs-server"
-sudo docker stop nfs-server
+# Function to clean up Flannel CNI
+remove_flannel_cni() {
+    echo "Removing Flannel CNI..."
+    if sudo kubectl get nodes >/dev/null 2>&1; then
+        sudo kubectl delete -f "$FLANNEL_CNI_URL" --ignore-not-found || echo "Flannel CNI already removed or not found."
+    else
+        echo "Kubernetes cluster not available for Flannel cleanup."
+    fi
+}
 
-echo "Stopping nfs-network"
-sudo docker network rm nfs-network
+# Function to stop and remove the NFS server
+stop_nfs_server() {
+    echo "Stopping NFS server..."
+    sudo docker-compose down
+}
+
+# Function to remove the Docker network
+remove_nfs_network() {
+    echo "Removing NFS network..."
+    if sudo docker network inspect "$NFS_NETWORK" >/dev/null 2>&1; then
+        sudo docker network rm "$NFS_NETWORK"
+    else
+        echo "NFS network already removed or not found."
+    fi
+}
+
+# Main execution
+delete_kubernetes_resources
+delete_kind_cluster
+remove_flannel_cni
+stop_nfs_server
+remove_nfs_network
+
+echo "Cleanup complete!"

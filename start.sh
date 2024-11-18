@@ -1,43 +1,66 @@
 #!/bin/bash
-#
-#
 
-echo "creating NFS Network"
-if [ "$(sudo docker network ls | grep nfs-network)" ]; then
-    echo "NFS network already exists"
-else
-    sudo docker network create --driver bridge --subnet 172.25.0.0/16 nfs-network
-fi
+# Constants
+NFS_NETWORK="nfs-network"
+FLANNEL_CNI_URL="https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml"
 
-echo "Starting NFS server" 
-# Start NFS server
-sudo docker-compose -f docker-compose.yml up -d --force-recreate
+# Function to check and create the Docker network
+create_nfs_network() {
+    echo "Checking NFS network..."
+    if sudo docker network inspect "$NFS_NETWORK" >/dev/null 2>&1; then
+        echo "NFS network already exists."
+    else
+        echo "Creating NFS network..."
+        sudo docker network create --driver bridge --subnet 172.25.0.0/16 "$NFS_NETWORK"
+    fi
+}
 
-echo "Creating Kubernetes cluster..."
-# Create the Kubernetes cluster with kind
-sudo kind create cluster --config ./Kubernetes/kind-config.yaml
-# Load the Docker image into Kind
-sudo kind load docker-image nfs-server:latest --name kind
+# Function to start the NFS server
+start_nfs_server() {
+    echo "Starting NFS server..."
+    sudo docker-compose up -d --force-recreate
+}
 
-# Apply the Flannel CNI with a local file
-echo "Applying Flannel CNI..."
-curl -o kube-flannel.yml https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
-kubectl apply -f kube-flannel.yml --validate=false
+# Function to set up the Kubernetes cluster
+setup_kubernetes_cluster() {
+    echo "Creating Kubernetes cluster..."
+    sudo kind create cluster --config ./Kubernetes/kind-config.yaml
 
-# Ensure nodes are connected to nfs-network
-echo "Connecting Kind nodes to the NFS network..."
-sudo docker network connect nfs-network kind-control-plane
-sudo docker network connect nfs-network kind-worker
-sudo docker network connect nfs-network kind-worker2
+    echo "Loading Docker image into Kind..."
+    sudo kind load docker-image nfs-server:latest --name kind
+}
 
-# Start PV, PVC, and Deployment
-echo "Applying PV, PVC, and NFS Deployment..."
-sudo kubectl apply -f ./Kubernetes/nfs-pv.yaml
-sudo kubectl apply -f ./Kubernetes/nfs-pvc.yaml
-sudo kubectl apply -f ./Kubernetes/nfs-deployment.yaml
+# Function to apply the Flannel CNI
+apply_flannel_cni() {
+    echo "Applying Flannel CNI..."
+    curl -o kube-flannel.yml "$FLANNEL_CNI_URL"
+    kubectl apply -f kube-flannel.yml --validate=false
+}
 
-echo "NFS server, and Kubernetes cluster setup complete!"
+# Function to connect Kubernetes nodes to the Docker network
+connect_nodes_to_network() {
+    echo "Connecting Kind nodes to the NFS network..."
+    for node in kind-control-plane kind-worker kind-worker2; do
+        sudo docker network connect "$NFS_NETWORK" "$node"
+    done
+}
 
-# Display the status of Docker containers and Kubernetes nodes
+# Function to apply PV, PVC, and deployment
+apply_kubernetes_resources() {
+    echo "Applying PersistentVolume, PersistentVolumeClaim, and Deployment..."
+    sudo kubectl apply -f ./Kubernetes/nfs-pv.yaml
+    sudo kubectl apply -f ./Kubernetes/nfs-pvc.yaml
+    sudo kubectl apply -f ./Kubernetes/nfs-deployment.yaml
+}
+
+# Main execution
+create_nfs_network
+start_nfs_server
+setup_kubernetes_cluster
+apply_flannel_cni
+connect_nodes_to_network
+apply_kubernetes_resources
+
+echo "NFS server and Kubernetes cluster setup complete!"
 sudo docker ps
 sudo kubectl get nodes
