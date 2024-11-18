@@ -6,7 +6,7 @@ spec:
   volumeMode: Filesystem
   storageClassName: ""
   accessModes:
-    - ReadWriteMany
+  - ReadWriteMany
   resources:
     requests:
       storage: 5Gi

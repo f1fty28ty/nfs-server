@@ -2,7 +2,6 @@
 
 # Constants
 NFS_NETWORK="nfs-network"
-FLANNEL_CNI_URL="https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml"
 
 # Function to check and create the Docker network
 create_nfs_network() {
@@ -30,13 +29,6 @@ setup_kubernetes_cluster() {
     sudo kind load docker-image nfs-server:latest --name kind
 }
 
-# Function to apply the Flannel CNI
-apply_flannel_cni() {
-    echo "Applying Flannel CNI..."
-    curl -o kube-flannel.yml "$FLANNEL_CNI_URL"
-    kubectl apply -f kube-flannel.yml --validate=false
-}
-
 # Function to connect Kubernetes nodes to the Docker network
 connect_nodes_to_network() {
     echo "Connecting Kind nodes to the NFS network..."
@@ -57,7 +49,6 @@ apply_kubernetes_resources() {
 create_nfs_network
 start_nfs_server
 setup_kubernetes_cluster
-apply_flannel_cni
 connect_nodes_to_network
 apply_kubernetes_resources
 

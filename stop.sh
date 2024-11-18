@@ -18,16 +18,6 @@ delete_kind_cluster() {
     sudo kind delete cluster
 }
 
-# Function to clean up Flannel CNI
-remove_flannel_cni() {
-    echo "Removing Flannel CNI..."
-    if sudo kubectl get nodes >/dev/null 2>&1; then
-        sudo kubectl delete -f "$FLANNEL_CNI_URL" --ignore-not-found || echo "Flannel CNI already removed or not found."
-    else
-        echo "Kubernetes cluster not available for Flannel cleanup."
-    fi
-}
-
 # Function to stop and remove the NFS server
 stop_nfs_server() {
     echo "Stopping NFS server..."
@@ -47,7 +37,6 @@ remove_nfs_network() {
 # Main execution
 delete_kubernetes_resources
 delete_kind_cluster
-remove_flannel_cni
 stop_nfs_server
 remove_nfs_network
 
