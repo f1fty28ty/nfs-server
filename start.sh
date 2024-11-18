@@ -30,12 +30,12 @@ sudo docker network connect nfs-network kind-worker2
 
 # Start PV, PVC, and Deployment
 echo "Applying PV, PVC, and NFS Deployment..."
-kubectl apply -f ./Kubernetes/nfs-pv.yaml
-kubectl apply -f ./Kubernetes/nfs-pvc.yaml
-kubectl apply -f ./Kubernetes/nfs-deployment.yaml
+sudo kubectl apply -f ./Kubernetes/nfs-pv.yaml
+sudo kubectl apply -f ./Kubernetes/nfs-pvc.yaml
+sudo kubectl apply -f ./Kubernetes/nfs-deployment.yaml
 
 echo "NFS server, and Kubernetes cluster setup complete!"
 
 # Display the status of Docker containers and Kubernetes nodes
 sudo docker ps
-kubectl get nodes
+sudo kubectl get nodes
