@@ -17,7 +17,7 @@ services:
     volumes:
       - '/mnt:/mnt'
       - './exports:/etc/exports'
-      - './logs:/logs'  # Add this line for logs access
+      - './logs:/logs'
     networks:
       - nfs-network
 

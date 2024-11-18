@@ -16,6 +16,8 @@ sudo docker-compose -f docker-compose.yml up -d --force-recreate
 echo "Creating Kubernetes cluster..."
 # Create the Kubernetes cluster with kind
 sudo kind create cluster --config ./Kubernetes/kind-config.yaml
+# Load the Docker image into Kind
+sudo kind load docker-image nfs-server:latest --name kind
 
 # Apply the Flannel CNI with a local file
 echo "Applying Flannel CNI..."
