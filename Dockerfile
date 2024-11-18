@@ -6,10 +6,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Create and set permissions for directories
-RUN mkdir -p /mnt /logs && \
-    chmod 777 /mnt && \
-    chmod 700 /logs && \
-    chown root:root /logs
+RUN mkdir -p /mnt/logs && chmod 777 /mnt/logs
 
 # Copy NFS exports configuration
 COPY exports /etc/exports
