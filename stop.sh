@@ -27,8 +27,8 @@ stop_nfs_server() {
 # Function to remove the Docker network
 remove_nfs_network() {
     echo "Removing NFS network..."
-    if sudo docker network inspect "$NFS_NETWORK" >/dev/null 2>&1; then
-        sudo docker network rm "$NFS_NETWORK"
+    if sudo docker network inspect $NFS_NETWORK >/dev/null 2>&1; then
+        sudo docker network rm $NFS_NETWORK
     else
         echo "NFS network already removed or not found."
     fi
