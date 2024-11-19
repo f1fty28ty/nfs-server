@@ -12,4 +12,3 @@ spec:
     path: /mnt
     server: 172.25.0.2
   persistentVolumeReclaimPolicy: Retain
-  storageClassName: ""

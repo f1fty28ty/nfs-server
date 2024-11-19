@@ -1,3 +1,2 @@
-/mnt 172.25.0.0/16(rw,sync,no_subtree_check,no_root_squash)
-/mnt/logs 172.25.0.0/16(rw,sync,no_subtree_check,no_root_squash)
-/mnt/clients 172.25.0.0/16(rw,sync,no_subtree_check,no_root_squash)
+/mnt/shared 172.25.0.0/16(sync,wdelay,hide,no_subtree_check,sec=sys,rw,secure,no_root_squash,no_all_squash)
+/mnt/logs   172.25.0.0/16(sync,wdelay,hide,no_subtree_check,sec=sys,rw,secure,no_root_squash,no_all_squash)

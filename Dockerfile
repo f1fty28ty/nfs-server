@@ -2,31 +2,25 @@ FROM arm64v8/ubuntu:latest
 
 # Install necessary packages
 RUN apt-get update && \
-    apt-get install -y nfs-kernel-server rpcbind kmod git cron inotify-tools && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get install -y nfs-kernel-server rpcbind git cron && \
+    mkdir -p /mnt/shared/uploads /mnt/shared/data /mnt/logs && \
+    chmod -R 777 /mnt/shared /mnt/logs && \
+    cd /mnt/logs && git init 
 
-# Create directories for NFS
-RUN mkdir -p /mnt/clients /mnt/logs && \
-    chmod -R 777 /mnt
-# Copy default /mnt-copy content to initialize /mnt
-COPY ./mnt-copy /mnt
+# Add cron job to commit logs every minute
+RUN echo "*/1 * * * * cd /mnt/logs && git add . && git commit -m 'Automated log commit' >> /mnt/logs/git_cron.log 2>&1" > /etc/cron.d/git-log-cron && \
+    chmod 0644 /etc/cron.d/git-log-cron && \
+    crontab /etc/cron.d/git-log-cron
 
 # Copy NFS exports configuration
 COPY exports /etc/exports
 
-# Copy scripts for logging and startup
-COPY start-nfs.sh /start-nfs.sh
-COPY log-watcher.sh /log-watcher.sh
-COPY log-client-login.sh /log-client-login.sh
-RUN chmod +x /start-nfs.sh /log-watcher.sh /log-client-login.sh
-
-# Add cron job for log rotation
-RUN echo "*/1 * * * * /log-watcher.sh >> /mnt/logs/changes.log 2>&1" > /etc/cron.d/log-watcher-cron && \
-    chmod 0644 /etc/cron.d/log-watcher-cron && \
-    crontab /etc/cron.d/log-watcher-cron
-
 # Expose necessary ports
 EXPOSE 111/udp 2049/tcp
 
-# Start both NFS server and cron services
+# Copy the startup script
+COPY start-nfs.sh /start-nfs.sh
+RUN chmod +x /start-nfs.sh
+
+# Start NFS server and cron services
 CMD ["/bin/bash", "-c", "/start-nfs.sh && cron -f"]
