@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: nfs-deployment
 spec:
-  replicas: 1
+  replicas: 5
   selector:
     matchLabels:
       app: nfs-app
@@ -19,6 +19,10 @@ spec:
         volumeMounts:
         - mountPath: /mnt
           name: nfs-storage
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
 
       volumes:
       - name: nfs-storage
