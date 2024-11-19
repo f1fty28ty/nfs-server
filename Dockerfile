@@ -6,8 +6,8 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Create directories for NFS
-RUN mkdir -p /mnt /logs && chmod 777 /mnt /logs
-
+RUN mkdir -p /mnt/clients /mnt/logs && \
+    chmod -R 777 /mnt
 # Copy default /mnt-copy content to initialize /mnt
 COPY ./mnt-copy /mnt
 
