@@ -2,7 +2,7 @@ FROM arm64v8/ubuntu:latest
 
 # Install necessary packages
 RUN apt-get update && \
-    apt-get install -y nfs-kernel-server rpcbind kmod git cron && \
+    apt-get install -y nfs-kernel-server rpcbind kmod cron && \
     rm -rf /var/lib/apt/lists/*
 
 # Create and set permissions for directories
@@ -19,8 +19,8 @@ EXPOSE 111/udp 2049/tcp
 COPY start-nfs.sh /start-nfs.sh
 RUN chmod +x /start-nfs.sh
 
-# Set up logrotate
-COPY logrotate.conf /etc/logrotate.d/nfs-logs
+# Set timezone to match host
+RUN ln -sf /usr/share/zoneinfo/$(cat /etc/timezone) /etc/localtime
 
-# Start both NFS and cron services
+# Start NFS and cron services
 CMD ["/bin/bash", "-c", "/start-nfs.sh && cron -f"]

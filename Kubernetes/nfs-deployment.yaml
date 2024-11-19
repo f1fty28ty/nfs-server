@@ -15,22 +15,10 @@ spec:
       containers:
       - name: nfs-container
         image: arm64v8/busybox:latest
-        command: [ "/bin/sh", "-c", "while true; do /bin/sh -c 'echo $(date -u +\"%Y-%m-%dT%H:%M:%SZ\") [INFO]: Logged in > /mnt/logs/client-$(hostname).log'; sleep 10; done" ]
+        command: [ "/bin/sh", "-c", "while true; do /usr/local/bin/log-client-login.sh; sleep 10; done" ]
         volumeMounts:
         - mountPath: /mnt
           name: nfs-storage
-        env:
-        - name: HOSTNAME
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.name
-        resources:
-          requests:
-            memory: "64Mi"
-            cpu: "250m"
-          limits:
-            memory: "128Mi"
-            cpu: "500m"
 
       volumes:
       - name: nfs-storage
