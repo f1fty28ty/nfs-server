@@ -1,23 +1,25 @@
 #!/bin/bash
 
-echo "Starting NFS server..."
+# Prepopulate /mnt from /mnt-copy
+echo "Copying default files from /mnt-copy to /mnt..."
+cp -R /mnt/* /mnt/ || echo "No files to copy from /mnt-copy"
+
+# Ensure necessary directories exist
+mkdir -p /mnt/logs /mnt/clients /mnt/shared
+chmod 777 /mnt/logs /mnt/clients /mnt/shared
+
+# Start RPC and NFS services
+echo "Starting RPC and NFS services..."
 service rpcbind start
 service nfs-kernel-server start
 
-echo "Ensuring /mnt/logs exists and is writable..."
-mkdir -p /mnt/logs && chmod 777 /mnt/logs
+# Export NFS directories
+echo "Exporting NFS directories..."
+exportfs -rav
 
-echo "Linking timezone for correct time sync..."
-ln -sf /usr/share/zoneinfo/$(cat /etc/timezone) /etc/localtime
+# Start log-watcher in the background
+echo "Starting log watcher..."
+nohup /log-watcher.sh &
 
-echo "Setting up login tracking script..."
-cat <<'EOF' > /usr/local/bin/log-client-login.sh
-#!/bin/bash
-echo "$(date -u '+%Y-%m-%d %H:%M:%S UTC'): Client $(hostname) (IP: $(hostname -i)) logged in" >> /mnt/logs/login.txt
-EOF
-chmod +x /usr/local/bin/log-client-login.sh
-
-echo "Starting cron service..."
-cron
-
-echo "NFS server is ready and logging system is active."
+# Confirmation
+echo "NFS server started and configured successfully."

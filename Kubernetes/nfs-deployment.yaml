@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: nfs-deployment
 spec:
-  replicas: 5
+  replicas: 2
   selector:
     matchLabels:
       app: nfs-app
@@ -13,17 +13,17 @@ spec:
         app: nfs-app
     spec:
       containers:
-      - name: nfs-container
+      - name: nfs-client
         image: arm64v8/busybox:latest
-        command: [ "/bin/sh", "-c", "while true; do /usr/local/bin/log-client-login.sh; sleep 10; done" ]
+        command: [ "/bin/sh", "-c", "/mnt/logs/log-client-login.sh && sleep 3600" ]
         volumeMounts:
-        - mountPath: /mnt
-          name: nfs-storage
-        resources:
-          limits:
-            memory: "128Mi"
-            cpu: "500m"
-
+        - name: nfs-storage
+          mountPath: /mnt
+        env:
+        - name: HOSTNAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
       volumes:
       - name: nfs-storage
         persistentVolumeClaim:
