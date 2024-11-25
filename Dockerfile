@@ -12,9 +12,6 @@ RUN echo "*/1 * * * * cd /mnt/logs && git add . && git commit -m 'Automated log 
     chmod 0644 /etc/cron.d/git-log-cron && \
     crontab /etc/cron.d/git-log-cron
 
-# Enable and start NFS and RPC services
-RUN systemctl enable rpcbind nfs-kernel-server
-
 # Copy NFS exports configuration
 COPY exports /etc/exports
 

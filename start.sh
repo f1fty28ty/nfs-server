@@ -24,9 +24,6 @@ start_nfs_server() {
 setup_kubernetes_cluster() {
     echo "Creating Kubernetes cluster..."
     kind create cluster --config ./Kubernetes/kind-config.yaml
-
-    echo "Loading Docker image into Kind..."
-    kind load docker-image nfs-server:latest --name kind
 }
 
 # Function to connect Kubernetes nodes to the Docker network

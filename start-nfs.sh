@@ -1,6 +1,7 @@
 #!/bin/bash
 
 echo "Starting RPC and NFS services..."
+rpcbind
 service rpcbind start
 service nfs-kernel-server start
 

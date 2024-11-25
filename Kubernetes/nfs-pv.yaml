@@ -9,6 +9,6 @@ spec:
   accessModes:
   - ReadWriteMany
   nfs:
-    path: /mnt
+    path: /mnt/shared
     server: 172.25.0.2
   persistentVolumeReclaimPolicy: Retain
