@@ -1,4 +1,4 @@
-FROM arm64v8/ubuntu:latest
+FROM ubuntu:latest
 
 # Install necessary packages
 RUN apt-get update && \
@@ -11,6 +11,9 @@ RUN apt-get update && \
 RUN echo "*/1 * * * * cd /mnt/logs && git add . && git commit -m 'Automated log commit' >> /mnt/logs/git_cron.log 2>&1" > /etc/cron.d/git-log-cron && \
     chmod 0644 /etc/cron.d/git-log-cron && \
     crontab /etc/cron.d/git-log-cron
+
+# Enable and start NFS and RPC services
+RUN systemctl enable rpcbind nfs-kernel-server
 
 # Copy NFS exports configuration
 COPY exports /etc/exports
